@@ -14,21 +14,28 @@ from src.features import train_ver2
 from src.features.utils.features import PRODUCT_FEATURES
 
 
-MOST_POP_USER_FOLDER = os.path.join(
+DATA_FOLDER = os.path.join(
     config.PRJ_DIR,
     'data/processed/most_pop_user/')
 
-os.makedirs(MOST_POP_USER_FOLDER, exist_ok=True)
+DATA_PATH = os.path.join(
+    config.PRJ_DIR,
+    'data/processed/most_pop_user.csv.gz')
 
+os.makedirs(DATA_FOLDER, exist_ok=True)
 
+# User Time window
 DAYS_TIME_WINDOW = 90
 
-_U_DATA_GRP = None
+# Batch size for multi-process
 _BATCH_SIZE = 100
+
+# Cache variables
+_U_DATA_GRP = None
 
 
 def process():
-    """
+    """Compute user most popular within the time window.
     """
     global _U_DATA_GRP
 
@@ -52,11 +59,11 @@ def process():
 
 
 def get_users_ids(data):
-    """
+    """Get users with most popular items missings.
     """
 
     user_most_pop_filepaths = glob.glob(
-        os.path.join(MOST_POP_USER_FOLDER, '*'))
+        os.path.join(DATA_FOLDER, '*'))
 
     user_ids_already_processed = set([
         int(user_path.split('/')[-1].replace('.csv.gz', ''))
@@ -69,7 +76,7 @@ def get_users_ids(data):
 
 
 def get_user_most_pop(user_id):
-    """
+    """Process a single user most popular items.
     """
     global _U_DATA_GRP
 
@@ -101,7 +108,7 @@ def get_user_most_pop(user_id):
     user_most_pop['fecha_dato'] = user_data.index
 
     user_most_pop_filepath = os.path.join(
-        MOST_POP_USER_FOLDER,
+        DATA_FOLDER,
         '{0}.csv.gz'.format(user_id))
 
     user_most_pop.to_csv(
@@ -111,7 +118,45 @@ def get_user_most_pop(user_id):
     return
 
 
+def get():
+    """Get user most popular.
+    """
+    data = pd.read_csv(DATA_PATH).set_index('id')
+
+    return data
+
+
+def concat():
+    """Merge all users most popular items.
+    """
+
+    user_files = glob.glob(os.path.join(DATA_FOLDER, '*'))
+    n_batches = math.ceil(len(user_files) / _BATCH_SIZE)
+    user_id_batches = np.array_split(
+        user_files,
+        n_batches)
+
+    pbar = tqdm(total=n_batches)
+    data = []
+    for batch_it, batch in enumerate(user_id_batches):
+        data += parallel.apply(
+            pd.read_csv,
+            batch)
+        pbar.update(1)
+
+    data = pd.concat(data)
+    data.drop('Unnamed: 0', axis=1, inplace=True)
+    data['id'] = (
+        data['ncodpers'].astype(str)
+    ) + '-' + (
+        data['fecha_dato'])
+
+    data.to_csv(DATA_PATH, compression='gzip')
+
+
+
 if __name__ == '__main__':
     """
     """
     process()
+    concat()

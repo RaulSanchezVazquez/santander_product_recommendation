@@ -12,7 +12,7 @@ DATA_DIR = os.path.join(PRJ_DIR, 'data')
 VERBOSE = True
 
 # Number of jobs
-N_JOBS = 6
+N_JOBS = 8
 
 # Create project folders
 _prj_folders = [
@@ -22,7 +22,8 @@ _prj_folders = [
     'data/interim',
     'data/external',
     'models',
-    'reports'
+    'reports',
+    'data/processed/ranks',
 ]
 
 

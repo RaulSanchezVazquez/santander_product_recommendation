@@ -13,3 +13,5 @@ PRODUCT_FEATURES = [
     'ind_plan_fin_ult1', 'ind_pres_fin_ult1', 'ind_reca_fin_ult1',
     'ind_tjcr_fin_ult1', 'ind_valo_fin_ult1', 'ind_viv_fin_ult1',
     'ind_nomina_ult1', 'ind_nom_pens_ult1', 'ind_recibo_ult1']
+
+TOP_N = 10

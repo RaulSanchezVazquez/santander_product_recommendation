@@ -12,7 +12,14 @@ DATA_PATH = os.path.join(
 
 
 def get():
-    """
+    """Fetch data.
+
+    Train dataset.
+
+    Return
+    ------
+    data : pandas.DataFrame.
+        The data.
     """
 
     start = time.time()

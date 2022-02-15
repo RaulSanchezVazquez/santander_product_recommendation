@@ -20,7 +20,7 @@ DAYS_TIME_WINDOW = [60, 90, 120]
 
 
 def process():
-    """
+    """Compute item most popular in the time window.
     """
     data = train_ver2.get()
 
@@ -57,7 +57,7 @@ def process():
 
 
 def get(days=60):
-    """
+    """Get item most popular in the time window.
     """
     data = pd.read_csv(DATA_PATH.format(days))
 
