@@ -22,7 +22,7 @@ from src.features import folds
 
 DATA_FOLDER = os.path.join(
     config.PRJ_DIR,
-    'data/processed/ranks/net2/')
+    'data/processed/ranks/recsysnet/')
 
 NDCG_PATH = os.path.join(DATA_FOLDER, 'ndcg.csv')
 
@@ -34,6 +34,7 @@ DENSE_FEATURES = ['age', 'renta']
 # Training params
 N_EPOCHS = 30
 EARLY_STOPPING_ROUNDS = 3
+
 
 def get_item_ids(items):
     """Get mappings of items to indices.
