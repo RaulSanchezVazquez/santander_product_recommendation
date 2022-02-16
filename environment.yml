@@ -1,4 +1,4 @@
-name: spyder
+name: recsys
 channels:
   - pytorch
   - conda-forge
